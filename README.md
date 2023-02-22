@@ -1,6 +1,6 @@
 <img src='./src/assets/kruger.png' with='50px' >
 
-# Kruger Star Biblioteca
+# Js Patterns
 
 >Software design patterns are a tried and true solution to common problems that arise in software design. 
 They are not finished designs, but rather a blueprint for solving problems that can be applied to many different situations.

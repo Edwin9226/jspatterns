@@ -162,16 +162,81 @@ class MazeGame {
     }
 }
 
+/**
+ * @abstract
+ */
+
+class MazeBuilder {
+ constructor(){}
+ buildMaze(){}
+ buildRoom(){}
+ buildDoor(){}
+ getMaze(){}
+
+}
+
+/**
+ * @extends MazeBUilders
+ */
+class StandarMazeBuilder extends MazeBuilder{
+    constructor(){
+        super();
+        this._currenMaze=null;
+    }
+
+    buildMaze (){
+        this._currenMaze= new Maze();
+        return this;
+    }
+
+    buildRoom(id){
+        if(!this._currenMaze.getRoom(id)){
+            const room= new Room(id);
+            room.setSide('north', new Wall());
+            room.setSide('east',  new Wall());
+            room.setSide('south', new Wall());
+            room.setSide('west', new Wall());
+            this._currenMaze.addRoom(room);
+            return this;
+        }
+    }
+    buildDoor(id1, dir1 , id2, dir2){
+        const r1= this._currenMaze.getRoom(id1);
+        const r2= this._currenMaze.getRoom(id2);
+        const door= new Door(r1,r2);
+        r1.setSide(dir1, door);
+        r2.setSide(dir2, door);
+        return this;
+    }
+
+    getMaze(){
+        return this._currenMaze;
+    }
+}
+
+class BuilderMazeGame extends MazeGame{
+    createMaze(builder){
+        const maze= builder.buildMaze().buildRoom(1).buildRoom(2).buildDoor(1,'east',2, 'west').getMaze();
+        this.currentRoom= maze.getRoom(1);
+        return maze;
+    }
+}
+
+
 console.log('---------------------- GAME IS BEGINING ---------------');
 
-const game = new MazeGame();
-const maze= game.createMaze();
+const builderGame= new BuilderMazeGame();
+const builder= new StandarMazeBuilder();
+const maze= builderGame.createMaze(builder);
 
-game.getCurrentRoom();
+builderGame.getCurrentRoom();
+builderGame.tryDirection('north');
+builderGame.tryDirection('east');
+builderGame.tryDirection('south','open');
+builderGame.tryDirection('east', 'open');
+builderGame.tryDirection('east');
+builderGame.tryDirection('west');
 
-game.tryDirection('north');
-game.tryDirection('east');
-game.tryDirection('south', 'open');
-game.tryDirection('east', 'open');
-game.tryDirection('east');
-game.tryDirection('west');
+/**
+ * while mike a builder, I suggest an abstract builder for others builders. 
+ */
